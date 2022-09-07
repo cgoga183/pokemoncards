@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace PockemonCards.Network
 {
-    struct PokemonDto
+    public class PokemonDto
     {
         public int base_experience;
         public string name;
