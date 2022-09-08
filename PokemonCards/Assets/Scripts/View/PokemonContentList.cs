@@ -1,5 +1,6 @@
 using PockemonCards.Network;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace PockemonCards.View
@@ -7,6 +8,13 @@ namespace PockemonCards.View
     public class PokemonContentList : MonoBehaviour
     {
         public PokemonTemplate pokemonTemplatePrefab;
+        public TextMeshProUGUI loadingText;
+
+        void Awake()
+        {
+            loadingText.gameObject.SetActive(true);
+            loadingText.text = Texts.FETCHING_POKEMONS;
+        }
 
         /// <summary>
         /// Will populate the list and instantiate each pokemon using the pokemonTemplatePrefab
@@ -19,6 +27,7 @@ namespace PockemonCards.View
             {
                 return;
             }
+            loadingText.gameObject.SetActive(false);
 
             foreach(var pokemonInfo in pokemonInfoList)
             {
