@@ -7,6 +7,7 @@ namespace PockemonCards.View
     public class ProgressContainer : MonoBehaviour
     {
         public TextMeshProUGUI titleAndErrors;
+        public TextMeshProUGUI progessBarCounterText;
         public Slider progressBar;
 
         public Color failedColor = Color.red;
@@ -96,6 +97,7 @@ namespace PockemonCards.View
         public void UpdateProgress(int fetchedItemsCount, int totalItemsCount)
         {
             progressBar.value = (float)fetchedItemsCount / (float)totalItemsCount;
+            progessBarCounterText.text = string.Format(Texts.FETCH_PER_TOTAL, fetchedItemsCount, totalItemsCount);
         }
     }
 }

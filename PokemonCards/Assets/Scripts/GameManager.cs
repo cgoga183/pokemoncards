@@ -17,7 +17,7 @@ namespace PockemonCards
 
         //event to be triggered when fetching all the pokemon info is completed
         public UnityEvent<List<PokemonDto>> OnPokemonInfoFetched;
-        //event to be triggered to updated the progress bar as we fetch pokemon info
+        //event to be triggered to update the progress bar as we fetch pokemon info.
         public UnityEvent<int, int> UpdateProgressBar;
 
         //used for displaying errors or successes

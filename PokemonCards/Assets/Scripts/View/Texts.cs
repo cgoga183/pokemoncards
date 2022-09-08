@@ -12,5 +12,6 @@ namespace PockemonCards.View
         public static string FETCHES_SUCCESFULLY = "Fetched succesfully all pokemons";
         public static string FETECHED_WITH_ERRORS = "Fetched with errors. We are missing {0} pokemons";
         public static string FETCHED_WITH_UNKNOWN_ERROR = "Could not fetch pokemons. Please try again.";
+        public static string FETCH_PER_TOTAL = "{0}/{1}";
     }
 }
