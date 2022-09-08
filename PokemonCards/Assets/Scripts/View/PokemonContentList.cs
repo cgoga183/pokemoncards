@@ -8,11 +8,6 @@ namespace PockemonCards.View
     {
         public PokemonTemplate pokemonTemplatePrefab;
 
-        void Start()
-        {
-            GameManager.Instance.OnPokemonInfoFetched += OnPokemonInfoFetched;
-        }
-
         /// <summary>
         /// Will populate the list and instantiate each pokemon using the pokemonTemplatePrefab
         /// </summary>
@@ -30,8 +25,6 @@ namespace PockemonCards.View
                 pokemonObject.gameObject.SetActive(true);
 
                 pokemonObject.transform.SetParent(gameObject.transform, false);
-
-                
             }
         }
     }
