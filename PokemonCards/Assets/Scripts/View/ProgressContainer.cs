@@ -2,97 +2,100 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProgressContainer : MonoBehaviour
+namespace PockemonCards.View
 {
-    public TextMeshProUGUI titleAndErrors;
-    public Slider progressBar;
-   
-    public Color failedColor = Color.red;
-    public Color successColor = Color.green;
-    public Color neutralColor = Color.white;
-
-    /// <summary>
-    /// The enum holding all possible states of this container
-    /// </summary>
-    public enum ProgressStates
+    public class ProgressContainer : MonoBehaviour
     {
-        STATE_NOTHING_TO_FETCH = 1,
-        STATE_FETCHING = 2,
-        STATE_RETRY_FAILED_FETCH = 3,
-        STATE_FETCHED_SUCCESFULLY = 4,
-        STATE_FINISH_FETCH_WITH_FAILED = 5,
-        STATE_FINISH_FETCH_WITH_UNKOWN_ERROR = 6
-    }
+        public TextMeshProUGUI titleAndErrors;
+        public Slider progressBar;
 
-    /// <summary>
-    /// It will set the state of the container
-    /// </summary>
-    /// <param name="state">The state we want the container to be set to</param>
-    /// <param name="noOfFailedFetches">The number of failed requests. This is optional</param>
-    public void SetState(ProgressStates state, int noOfFailedFetches = 0)
-    {
-        switch (state)
+        public Color failedColor = Color.red;
+        public Color successColor = Color.green;
+        public Color neutralColor = Color.white;
+
+        /// <summary>
+        /// The enum holding all possible states of this container
+        /// </summary>
+        public enum ProgressStates
         {
-            case ProgressStates.STATE_NOTHING_TO_FETCH:
-                OnStateNothingToFetch();
-                break;
-            case ProgressStates.STATE_FETCHING:
-                OnStateFetching();
-                break;
-            case ProgressStates.STATE_RETRY_FAILED_FETCH:
-                OnStateRetryFailedFetch(noOfFailedFetches);
-                break;
-            case ProgressStates.STATE_FETCHED_SUCCESFULLY:
-                OnStateFetchedSuccesfully();
-                break;
-            case ProgressStates.STATE_FINISH_FETCH_WITH_FAILED:
-                OnStateFinishedWithFailed(noOfFailedFetches);
-                break;
-            case ProgressStates.STATE_FINISH_FETCH_WITH_UNKOWN_ERROR:
-                OnStateFinishFetchWithUnknownError();
-                break;
+            STATE_NOTHING_TO_FETCH = 1,
+            STATE_FETCHING = 2,
+            STATE_RETRY_FAILED_FETCH = 3,
+            STATE_FETCHED_SUCCESFULLY = 4,
+            STATE_FINISH_FETCH_WITH_FAILED = 5,
+            STATE_FINISH_FETCH_WITH_UNKOWN_ERROR = 6
         }
-    }
-    
-    private void OnStateNothingToFetch()
-    {
-        titleAndErrors.color = failedColor;
-        titleAndErrors.text = "You don't own any pokemons";
-    }
 
-    private void OnStateFetching()
-    {
-        titleAndErrors.color = neutralColor;
-        titleAndErrors.text = "Fetching pokemons ...";
-    }
+        /// <summary>
+        /// It will set the state of the container
+        /// </summary>
+        /// <param name="state">The state we want the container to be set to</param>
+        /// <param name="noOfFailedFetches">The number of failed requests. This is optional</param>
+        public void SetState(ProgressStates state, int noOfFailedFetches = 0)
+        {
+            switch (state)
+            {
+                case ProgressStates.STATE_NOTHING_TO_FETCH:
+                    OnStateNothingToFetch();
+                    break;
+                case ProgressStates.STATE_FETCHING:
+                    OnStateFetching();
+                    break;
+                case ProgressStates.STATE_RETRY_FAILED_FETCH:
+                    OnStateRetryFailedFetch(noOfFailedFetches);
+                    break;
+                case ProgressStates.STATE_FETCHED_SUCCESFULLY:
+                    OnStateFetchedSuccesfully();
+                    break;
+                case ProgressStates.STATE_FINISH_FETCH_WITH_FAILED:
+                    OnStateFinishedWithFailed(noOfFailedFetches);
+                    break;
+                case ProgressStates.STATE_FINISH_FETCH_WITH_UNKOWN_ERROR:
+                    OnStateFinishFetchWithUnknownError();
+                    break;
+            }
+        }
 
-    private void OnStateRetryFailedFetch(int noOfFailedFetches)
-    {
-        progressBar.value = 0;
-        titleAndErrors.color = failedColor;
-        titleAndErrors.text = "There were " + noOfFailedFetches + " failed requests. Trying to fetch them again";
-    }
+        private void OnStateNothingToFetch()
+        {
+            titleAndErrors.color = failedColor;
+            titleAndErrors.text = Texts.YOU_DONT_OWN_POKEMONS;
+        }
 
-    private void OnStateFetchedSuccesfully()
-    {
-        titleAndErrors.color = successColor;
-        titleAndErrors.text = "Fetched succesfully all pokemons";
-    }
+        private void OnStateFetching()
+        {
+            titleAndErrors.color = neutralColor;
+            titleAndErrors.text = Texts.FETCHING_POKEMONS;
+        }
 
-    private void OnStateFinishedWithFailed(int noOfFailedFetches)
-    {
-        titleAndErrors.color = failedColor;
-        titleAndErrors.text = "Fetched with errors. We are missing " + noOfFailedFetches + " pokemons";
-    }
+        private void OnStateRetryFailedFetch(int noOfFailedFetches)
+        {
+            progressBar.value = 0;
+            titleAndErrors.color = failedColor;
+            titleAndErrors.text = string.Format(Texts.RETRY_FAILED_FETCHES, noOfFailedFetches);
+        }
 
-    private void OnStateFinishFetchWithUnknownError()
-    {
-        titleAndErrors.color = failedColor;
-        titleAndErrors.text = "Could not fetch pokemons. Please try again.";
-    }
+        private void OnStateFetchedSuccesfully()
+        {
+            titleAndErrors.color = successColor;
+            titleAndErrors.text = Texts.FETCHES_SUCCESFULLY;
+        }
 
-    public void UpdateProgress(int fetchedItemsCount, int totalItemsCount)
-    {
-        progressBar.value = (float)fetchedItemsCount / (float)totalItemsCount;
+        private void OnStateFinishedWithFailed(int noOfFailedFetches)
+        {
+            titleAndErrors.color = failedColor;
+            titleAndErrors.text = string.Format(Texts.FETECHED_WITH_ERRORS, noOfFailedFetches);
+        }
+
+        private void OnStateFinishFetchWithUnknownError()
+        {
+            titleAndErrors.color = failedColor;
+            titleAndErrors.text = Texts.FETCHED_WITH_UNKNOWN_ERROR;
+        }
+
+        public void UpdateProgress(int fetchedItemsCount, int totalItemsCount)
+        {
+            progressBar.value = (float)fetchedItemsCount / (float)totalItemsCount;
+        }
     }
 }

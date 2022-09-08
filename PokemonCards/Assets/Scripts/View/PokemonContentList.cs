@@ -14,8 +14,15 @@ namespace PockemonCards.View
         /// <param name="pokemonInfoList"></param>
         public void OnPokemonInfoFetched(List<PokemonDto> pokemonInfoList)
         {
+            //making sure we are not receiving a null list
+            if (ReferenceEquals(pokemonInfoList, null))
+            {
+                return;
+            }
+
             foreach(var pokemonInfo in pokemonInfoList)
             {
+                //ignore any null items if any
                 if (ReferenceEquals(pokemonInfo, null))
                     continue;
                 

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine.Events;
+using PockemonCards.View;
 
 namespace PockemonCards
 {
@@ -82,6 +83,11 @@ namespace PockemonCards
             //if there were errors on sending the request we will retry
             while (errors && noOfRetries > 0)
             {
+                //if there are no failed request in the web client it means there was another type of error so retrying does not make sense
+                if (!_webRequestClient.HadFailedRequests())
+                {
+                    break;
+                }
                 urls.Clear();
                 urls.AddRange(_webRequestClient.GetFailedUrls());
                 progressContainer.SetState(ProgressContainer.ProgressStates.STATE_RETRY_FAILED_FETCH, urls.Count);
@@ -131,7 +137,7 @@ namespace PockemonCards
 
             if (ReferenceEquals(urls, null) || urls.Count == 0)
             {
-                UnityEngine.Debug.LogError("The url request list is empty");
+                UnityEngine.Debug.LogError("The url request list is null or empty");
                 return true;
             }
 
