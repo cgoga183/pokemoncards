@@ -4,6 +4,7 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Events;
 using PockemonCards.View;
+using System.Threading.Tasks;
 
 namespace PockemonCards
 {
@@ -11,7 +12,9 @@ namespace PockemonCards
     {
         //if some requests will fail this is the max number of retries we are doing
         public const int NO_OF_RETRIES = 3;
-        
+        //the minimum waiting times between retrying to fetch the failed calls in miliseconds
+        public const int MINIMUM_WAITING_TIMES = 100;
+
         public static GameManager Instance;
 
         //event to be triggered when fetching all the pokemon info is completed
@@ -23,9 +26,9 @@ namespace PockemonCards
         public ProgressContainer progressContainer;
         
         private WebRequestClient _webRequestClient = new WebRequestClient();
-        //private string[] _ownedPokemonNames = { "asgdasgsagasdgasdgasgasdgsadgsa23516161234632743273272347237__", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle" };
+        private string[] _ownedPokemonNames = { "asgdasgsagasdgasdgasgasdgsadgsa23516161234632743273272347237__", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle" };
         //private string[] _ownedPokemonNames = { "bulbasaur", "Charmander", "Piplup", "squirtle"};
-        private string[] _ownedPokemonNames = { "raticate", "rattata", "pidgeot", "pidgeotto", "pidgey", "beedrill", "kakuna", "weedle", "butterfree", "metapod", "caterpie", "blastoise", "wartortle", "squirtle", "charizard", "charmeleon", "charmander", "venusaur", "wigglytuff", "jigglypuff", "ninetales", "vulpix", "clefable", "clefairy", "nidoking", "nidorino", "nidoran-m", "nidoqueen", "nidorina", "nidoran-f", "sandslash", "sandshrew", "raichu", "pikachu", "arbok", "ekans", "fearow", "spearow"};
+        //private string[] _ownedPokemonNames = { "raticate", "rattata", "pidgeot", "pidgeotto", "pidgey", "beedrill", "kakuna", "weedle", "butterfree", "metapod", "caterpie", "blastoise", "wartortle", "squirtle", "charizard", "charmeleon", "charmander", "venusaur", "wigglytuff", "jigglypuff", "ninetales", "vulpix", "clefable", "clefairy", "nidoking", "nidorino", "nidoran-m", "nidoqueen", "nidorina", "nidoran-f", "sandslash", "sandshrew", "raichu", "pikachu", "arbok", "ekans", "fearow", "spearow"};
         //private string[] _ownedPokemonNames = { };
 
 
@@ -101,6 +104,8 @@ namespace PockemonCards
                 urls.Clear();
                 urls.AddRange(_webRequestClient.GetFailedUrls());
                 progressContainer.SetState(ProgressContainer.ProgressStates.STATE_RETRY_FAILED_FETCH, urls.Count);
+                //add a delay between retries that will increase as we try more
+                await Task.Delay(MINIMUM_WAITING_TIMES * (NO_OF_RETRIES - noOfRetries));
 
                 responses = await _webRequestClient.GetAnyAsync<PokemonDto>(urls, OnRequestSuccesful);
                 errors = _webRequestClient.HadFailedRequests();
