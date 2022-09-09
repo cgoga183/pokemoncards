@@ -7,7 +7,9 @@ namespace PockemonCards.View
 {
     public class PokemonContentList : MonoBehaviour
     {
+        //the prefab template used to instantiate an item in the list
         public PokemonTemplate pokemonTemplatePrefab;
+        //the text displayed while the list is empty
         public TextMeshProUGUI loadingText;
 
         void Awake()
@@ -19,14 +21,15 @@ namespace PockemonCards.View
         /// <summary>
         /// Will populate the list and instantiate each pokemon using the pokemonTemplatePrefab
         /// </summary>
-        /// <param name="pokemonInfoList"></param>
+        /// <param name="pokemonInfoList">The list that contains the data regarding the pokemons</param>
         public void OnPokemonInfoFetched(List<PokemonDto> pokemonInfoList)
         {
-            //making sure we are not receiving a null list
-            if (ReferenceEquals(pokemonInfoList, null))
+            //making sure we are not receiving a null or empty list
+            if (ReferenceEquals(pokemonInfoList, null) || pokemonInfoList.Count == 0)
             {
                 return;
             }
+
             loadingText.gameObject.SetActive(false);
 
             foreach(var pokemonInfo in pokemonInfoList)

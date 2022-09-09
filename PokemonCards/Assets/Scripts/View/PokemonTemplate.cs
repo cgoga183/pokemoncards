@@ -10,12 +10,12 @@ namespace PockemonCards.View
 
         public void SetName(string name)
         {
-            pokeName.text = "Name: " + name;
+            pokeName.text = string.Format(Texts.POKEMON_NAME, name);
         }
 
         public void SetBaseExperience(int baseExperience)
         {
-            pokeBaseExperience.text = "Base XP: " + baseExperience;
+            pokeBaseExperience.text = string.Format(Texts.POKEMON_BASE_XP, baseExperience);
         }
     }
 }

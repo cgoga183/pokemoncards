@@ -2,7 +2,6 @@ using PockemonCards.Network;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
-using System.Threading.Tasks;
 using UnityEngine.Events;
 using PockemonCards.View;
 
@@ -17,15 +16,16 @@ namespace PockemonCards
 
         //event to be triggered when fetching all the pokemon info is completed
         public UnityEvent<List<PokemonDto>> OnPokemonInfoFetched;
-        //event to be triggered to update the progress bar as we fetch pokemon info.
-        public UnityEvent<int, int> UpdateProgressBar;
+        //event to be triggered everytime a request will fnish succesfully
+        public UnityEvent OnRequestSuccesful;
 
         //used for displaying errors or successes
         public ProgressContainer progressContainer;
         
         private WebRequestClient _webRequestClient = new WebRequestClient();
-        private string[] _ownedPokemonNames = { "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle" };
+        //private string[] _ownedPokemonNames = { "asgdasgsagasdgasdgasgasdgsadgsa23516161234632743273272347237__", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle" , "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle", "bulbasaur", "Charmander", "Piplup", "squirtle" };
         //private string[] _ownedPokemonNames = { "bulbasaur", "Charmander", "Piplup", "squirtle"};
+        private string[] _ownedPokemonNames = { "raticate", "rattata", "pidgeot", "pidgeotto", "pidgey", "beedrill", "kakuna", "weedle", "butterfree", "metapod", "caterpie", "blastoise", "wartortle", "squirtle", "charizard", "charmeleon", "charmander", "venusaur", "wigglytuff", "jigglypuff", "ninetales", "vulpix", "clefable", "clefairy", "nidoking", "nidorino", "nidoran-m", "nidoqueen", "nidorina", "nidoran-f", "sandslash", "sandshrew", "raichu", "pikachu", "arbok", "ekans", "fearow", "spearow"};
         //private string[] _ownedPokemonNames = { };
 
 
@@ -46,13 +46,14 @@ namespace PockemonCards
         // Start is called before the first frame update
         void Start()
         {
-            FetchAllPokemonInfo();
+           FetchAllPokemonInfo();
            
         }
 
         /// <summary>
-        /// Will try fetching all owned pokemon info and handling errors.If there are some errors it will retry for the NO_OF_RETRIES size.
-        /// It notify the progressContainer to display the correct errors or success states
+        /// Will try fetching all owned pokemon info and handling errors.
+        /// If there are some errors it will retry for the NO_OF_RETRIES size.
+        /// It notifies the progressContainer to display the correct errors or success states.
         /// </summary>
         private async void FetchAllPokemonInfo()
         {
@@ -64,50 +65,58 @@ namespace PockemonCards
             }
 
             List<string> urls = new List<string>();
-            //creating the urls and converting all names to lowercase as the API is case sensitive
+            List<PokemonDto> pokemonList = new List<PokemonDto>();
+            //creating the request url list
             foreach (var name in _ownedPokemonNames)
             {
-                urls.Add(string.Format(Endpoints.POKEMON, name.ToLower()));
+                //I'm assuming the API expects the names in lower case although is not clearly specified in their docs
+                string nameEndpoint = string.Format(Endpoints.POKEMON, name.ToLower());
+                //making sure we are not adding duplicate so all requests will be unique
+                if (!urls.Contains(nameEndpoint))
+                {
+                    urls.Add(nameEndpoint);
+                }
             }
             
-            var stopwatch = Stopwatch.StartNew();
+            //reseting the progress bar
+            progressContainer.ResetProgressBar(urls.Count);
 
-            List<PokemonDto> pokemonList = new List<PokemonDto>();
+            //using this for debug purposes to test how long the requests will take
+            var stopwatch = Stopwatch.StartNew();
+            
             progressContainer.SetState(ProgressContainer.ProgressStates.STATE_FETCHING);
 
             int noOfRetries = NO_OF_RETRIES;
+            var responses = await _webRequestClient.GetAnyAsync<PokemonDto>(urls, OnRequestSuccesful);
 
-            bool errors = await PopulateListWithResultsAsync(urls, pokemonList);
+            bool errors = _webRequestClient.HadFailedRequests();
+            pokemonList.AddRange(responses);
+            pokemonList.Sort();
             noOfRetries--;
             
             //if there were errors on sending the request we will retry
             while (errors && noOfRetries > 0)
             {
-                //if there are no failed request in the web client it means there was another type of error so retrying does not make sense
-                if (!_webRequestClient.HadFailedRequests())
-                {
-                    break;
-                }
+                //will reset the url list and populate it only with the failed requests
                 urls.Clear();
                 urls.AddRange(_webRequestClient.GetFailedUrls());
                 progressContainer.SetState(ProgressContainer.ProgressStates.STATE_RETRY_FAILED_FETCH, urls.Count);
-                errors = await PopulateListWithResultsAsync(urls, pokemonList);
+
+                responses = await _webRequestClient.GetAnyAsync<PokemonDto>(urls, OnRequestSuccesful);
+                errors = _webRequestClient.HadFailedRequests();
+                pokemonList.AddRange(responses);
+                pokemonList.Sort();
                 noOfRetries--;
             }
             
+            //trigger the event for notifying anyone listening that we have fetched all data
             OnPokemonInfoFetched?.Invoke(pokemonList);
 
+            //error handling
             if (errors)
             {
-                int failedUrls = _webRequestClient.GetFailedUrls().Count;
-                if (failedUrls == 0)
-                {
-                    progressContainer.SetState(ProgressContainer.ProgressStates.STATE_FINISH_FETCH_WITH_UNKOWN_ERROR);
-                }
-                else
-                {
-                    progressContainer.SetState(ProgressContainer.ProgressStates.STATE_FINISH_FETCH_WITH_FAILED, urls.Count);
-                }
+                int failedUrlsCount = _webRequestClient.GetFailedUrls().Count;
+                progressContainer.SetState(ProgressContainer.ProgressStates.STATE_FINISH_FETCH_WITH_FAILED, failedUrlsCount);
             }
             else
             {
@@ -115,50 +124,7 @@ namespace PockemonCards
             }
 
             stopwatch.Stop();
-            UnityEngine.Debug.Log("calls took when all: " + stopwatch.ElapsedMilliseconds);
-
-        }
-
-        /// <summary>
-        /// It will start fetching the info from all the ulrs request list and populate and stort the final list with the non null results.
-        /// The final list must be initialized and not null othwerise this will return with error.
-        /// The urls request list must be initialized and have at least one itme otherwise it will return with error
-        /// </summary>
-        /// <param name="urls">List of ulrs requests</param>
-        /// <param name="finalList">The list that will be populated with the results</param>
-        /// <returns></returns>
-        private async Task<bool> PopulateListWithResultsAsync(List<string> urls, List<PokemonDto> finalList)
-        {
-            if (ReferenceEquals(finalList, null))
-            {
-                UnityEngine.Debug.LogError("The result list must be initialized");
-                return true;
-            }
-
-            if (ReferenceEquals(urls, null) || urls.Count == 0)
-            {
-                UnityEngine.Debug.LogError("The url request list is null or empty");
-                return true;
-            }
-
-            var responses = await _webRequestClient.GetAllAsync<PokemonDto>(urls, UpdateProgressBar);
-            bool errors = _webRequestClient.HadFailedRequests();
-            //if there were requests that failed we need to remove the null responses from the list
-            if (errors)
-            {
-                foreach (var response in responses)
-                {
-                    if (!ReferenceEquals(response, null))
-                        finalList.Add(response);
-                }
-            }
-            else
-            {
-                finalList.AddRange(responses);
-            }
-            finalList.Sort();
-
-            return errors;
+            UnityEngine.Debug.Log("Calls took: " + stopwatch.ElapsedMilliseconds);
         }
     }
 }

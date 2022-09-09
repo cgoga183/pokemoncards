@@ -6,13 +6,22 @@ namespace PockemonCards.View
 {
     public class ProgressContainer : MonoBehaviour
     {
-        public TextMeshProUGUI titleAndErrors;
+        //used to display any notifications
+        public TextMeshProUGUI notificationText;
         public TextMeshProUGUI progessBarCounterText;
         public Slider progressBar;
 
+        //the color used to display notificatdions for the fail state
         public Color failedColor = Color.red;
+        //the color used to display notificatdions for the succesful state
         public Color successColor = Color.green;
+        //the color used to display notificatdions for the neutral state
         public Color neutralColor = Color.white;
+
+        //counter used to keep track of completed items. used by the the progress
+        private int _completedItemsCount = 0;
+        //the maximum size of the items waiting to be completed.used by the progress bar
+        private int _maxItemsSize;
 
         /// <summary>
         /// The enum holding all possible states of this container
@@ -57,47 +66,63 @@ namespace PockemonCards.View
             }
         }
 
+        /// <summary>
+        /// Will reset the progress bar and set the maximum items size
+        /// </summary>
+        /// <param name="maxItemsSize"></param>
+        public void ResetProgressBar(int maxItemsSize)
+        {
+            progressBar.value = 0;
+            _completedItemsCount = 0;
+            _maxItemsSize = maxItemsSize;
+        }
+
+        /// <summary>
+        /// Will update the progress bar and the text with the latest completed items count
+        /// </summary>
+        public void UpdateProgressBar()
+        {
+            _completedItemsCount++;
+            progressBar.value = (float)_completedItemsCount / (float)_maxItemsSize;
+            progessBarCounterText.text = string.Format(Texts.FETCH_PER_TOTAL, _completedItemsCount, _maxItemsSize);
+        }
+
         private void OnStateNothingToFetch()
         {
-            titleAndErrors.color = failedColor;
-            titleAndErrors.text = Texts.YOU_DONT_OWN_POKEMONS;
+            notificationText.color = failedColor;
+            notificationText.text = Texts.YOU_DONT_OWN_POKEMONS;
         }
 
         private void OnStateFetching()
         {
-            titleAndErrors.color = neutralColor;
-            titleAndErrors.text = Texts.FETCHING_POKEMONS;
+            notificationText.color = neutralColor;
+            notificationText.text = Texts.FETCHING_POKEMONS;
         }
 
         private void OnStateRetryFailedFetch(int noOfFailedFetches)
         {
-            progressBar.value = 0;
-            titleAndErrors.color = failedColor;
-            titleAndErrors.text = string.Format(Texts.RETRY_FAILED_FETCHES, noOfFailedFetches);
+            notificationText.color = failedColor;
+            notificationText.text = string.Format(Texts.RETRY_FAILED_FETCHES, noOfFailedFetches);
         }
 
         private void OnStateFetchedSuccesfully()
         {
-            titleAndErrors.color = successColor;
-            titleAndErrors.text = Texts.FETCHES_SUCCESFULLY;
+            notificationText.color = successColor;
+            notificationText.text = Texts.FETCHES_SUCCESFULLY;
         }
 
         private void OnStateFinishedWithFailed(int noOfFailedFetches)
         {
-            titleAndErrors.color = failedColor;
-            titleAndErrors.text = string.Format(Texts.FETECHED_WITH_ERRORS, noOfFailedFetches);
+            notificationText.color = failedColor;
+            notificationText.text = string.Format(Texts.FETECHED_WITH_ERRORS, noOfFailedFetches);
         }
 
         private void OnStateFinishFetchWithUnknownError()
         {
-            titleAndErrors.color = failedColor;
-            titleAndErrors.text = Texts.FETCHED_WITH_UNKNOWN_ERROR;
+            notificationText.color = failedColor;
+            notificationText.text = Texts.FETCHED_WITH_UNKNOWN_ERROR;
         }
 
-        public void UpdateProgress(int fetchedItemsCount, int totalItemsCount)
-        {
-            progressBar.value = (float)fetchedItemsCount / (float)totalItemsCount;
-            progessBarCounterText.text = string.Format(Texts.FETCH_PER_TOTAL, fetchedItemsCount, totalItemsCount);
-        }
+
     }
 }
