@@ -1,6 +1,6 @@
 #pokemon-cards
 
-The project is structured as follows:
+The project was created using Unity 2020.3.35f1 and is structured as follows:
 
 Assets/	
 	Scenes/
